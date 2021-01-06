@@ -6,11 +6,11 @@ void main() {
 }
 
 final dummySnapshot = [
-  {"name": "Nome 1", "votes": 10},
-  {"name": "Nome 2", "votes": 10},
-  {"name": "Nome 3", "votes": 10},
-  {"name": "Nome 4", "votes": 10},
-  {"name": "Nome 5", "votes": 10},
+  {"month": "Nome 1", "hours": 10},
+  {"month": "Nome 2", "hours": 10},
+  {"month": "Nome 3", "hours": 10},
+  {"month": "Nome 4", "hours": 10},
+  {"month": "Nome 5", "hours": 10},
 ];
 
 class App extends StatelessWidget {
@@ -59,7 +59,7 @@ class _HomePageState extends State<HomePage> {
     final record = Record.fromMap(data);
 
     return Padding(
-      key: ValueKey(record.name),
+      key: ValueKey(record.month),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Container(
         decoration: BoxDecoration(
@@ -69,8 +69,8 @@ class _HomePageState extends State<HomePage> {
           borderRadius: BorderRadius.circular(5),
         ),
         child: ListTile(
-          title: Text(record.name),
-          trailing: Text(record.votes.toString()),
+          title: Text(record.month),
+          trailing: Text(record.hours.toString()),
           onTap: () => print(record),
         ),
       ),
@@ -79,19 +79,19 @@ class _HomePageState extends State<HomePage> {
 }
 
 class Record {
-  final String name;
-  final int votes;
+  final String month;
+  final int hours;
   final DocumentReference reference;
 
   Record.fromMap(Map<String, dynamic> map, {this.reference})
-      : assert(map['name'] != null),
-        assert(map['votes'] != null),
-        name = map['name'],
-        votes = map['votes'];
+      : assert(map['month'] != null),
+        assert(map['hours'] != null),
+        month = map['month'],
+        hours = map['hours'];
 
   Record.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data(), reference: snapshot.reference);
 
   @override
-  String toString() => "Record<$name:$votes>";
+  String toString() => "Record<$month:$hours>";
 }
