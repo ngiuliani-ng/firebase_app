@@ -54,7 +54,10 @@ class _HomePageState extends State<HomePage> {
      * Quando non ci sono dati, mostra un indicatore di avanzamento.
      */
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('months').snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection('months')
+          .orderBy('order')
+          .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
         return _buildList(context, snapshot.data.docs);
@@ -63,7 +66,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
-    // TODO: I mesi dovranno essere ordinati.
     return ListView(
       padding: const EdgeInsets.only(top: 16),
       children: snapshot.map((data) => _buildListItem(context, data)).toList(),
@@ -116,17 +118,20 @@ class _HomePageState extends State<HomePage> {
 class Record {
   final String month;
   final dynamic hours;
+  final dynamic order;
   final DocumentReference reference;
 
   Record.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['month'] != null),
         assert(map['hours'] != null),
+        assert(map['order'] != null),
         month = map['month'],
-        hours = map['hours'];
+        hours = map['hours'],
+        order = map['order'];
 
   Record.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data(), reference: snapshot.reference);
 
   @override
-  String toString() => "Record<$month:$hours>";
+  String toString() => "Record<$order:$month:$hours>";
 }
