@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -99,7 +100,7 @@ class _HomePageState extends State<HomePage> {
             record.month,
           ),
           subtitle: Text(
-            record.hours.toString(),
+            record.hours.toStringAsPrecision(1),
           ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
