@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+bool firestoreEmulator = false;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  if (firestoreEmulator) {
+    FirebaseFirestore.instance.settings = Settings(
+      host: 'localhost:8080',
+      sslEnabled: false,
+      persistenceEnabled: false,
+    );
+  }
   runApp(App());
 }
-
-final dummySnapshot = [
-  {"month": "Nome 1", "hours": 10},
-  {"month": "Nome 2", "hours": 10},
-  {"month": "Nome 3", "hours": 10},
-  {"month": "Nome 4", "hours": 10},
-  {"month": "Nome 5", "hours": 10},
-];
 
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Firebase',
-      debugShowCheckedModeBanner: true,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.white,
       ),
@@ -44,19 +48,30 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildBody(BuildContext context) {
-    // TODO: Qui andrà ottenuta l'istanza effettiva da Cloud Firestore.
-    return _buildList(context, dummySnapshot);
+    /**
+     * Il widget "StreamBuilder" ascolta gli aggiornamenti del database
+     * ed aggiorna l'elenco ogni volta che i dati cambiano.
+     * Quando non ci sono dati, mostra un indicatore di avanzamento.
+     */
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('months').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return LinearProgressIndicator();
+        return _buildList(context, snapshot.data.docs);
+      },
+    );
   }
 
-  Widget _buildList(BuildContext context, List<Map> snapshot) {
+  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+    // TODO: I mesi dovranno essere ordinati.
     return ListView(
       padding: const EdgeInsets.only(top: 16),
       children: snapshot.map((data) => _buildListItem(context, data)).toList(),
     );
   }
 
-  Widget _buildListItem(BuildContext context, Map data) {
-    final record = Record.fromMap(data);
+  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
+    final record = Record.fromSnapshot(data);
 
     return Padding(
       key: ValueKey(record.month),
@@ -69,9 +84,29 @@ class _HomePageState extends State<HomePage> {
           borderRadius: BorderRadius.circular(5),
         ),
         child: ListTile(
-          title: Text(record.month),
-          trailing: Text(record.hours.toString()),
-          onTap: () => print(record),
+          title: Text(
+            record.month,
+          ),
+          subtitle: Text(
+            record.hours.toString(),
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  record.reference.update({'hours': record.hours + 0.5});
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.remove),
+                onPressed: () {
+                  record.reference.update({'hours': record.hours - 0.5});
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -80,7 +115,7 @@ class _HomePageState extends State<HomePage> {
 
 class Record {
   final String month;
-  final int hours;
+  final dynamic hours;
   final DocumentReference reference;
 
   Record.fromMap(Map<String, dynamic> map, {this.reference})
