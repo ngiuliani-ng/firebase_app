@@ -75,13 +75,22 @@ class _HomePageState extends State<HomePage> {
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
     final record = Record.fromSnapshot(data);
 
+    _getCurrentDate() {
+      var date = new DateTime.now().toString();
+      var dateParse = DateTime.parse(date);
+      return dateParse;
+    }
+
     return Padding(
       key: ValueKey(record.month),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Container(
         decoration: BoxDecoration(
+          color: (_getCurrentDate().month == record.order)
+              ? Colors.transparent
+              : Colors.grey.shade300,
           border: Border.all(
-            color: Colors.grey,
+            color: Colors.grey.shade600,
           ),
           borderRadius: BorderRadius.circular(5),
         ),
@@ -98,13 +107,19 @@ class _HomePageState extends State<HomePage> {
               IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () {
-                  record.reference.update({'hours': record.hours + 0.5});
+                  if (_getCurrentDate().month == record.order)
+                    return record.reference
+                        .update({'hours': record.hours + 0.5});
+                  return null;
                 },
               ),
               IconButton(
                 icon: Icon(Icons.remove),
                 onPressed: () {
-                  record.reference.update({'hours': record.hours - 0.5});
+                  if (_getCurrentDate().month == record.order)
+                    return record.reference
+                        .update({'hours': record.hours - 0.5});
+                  return null;
                 },
               ),
             ],
