@@ -1,6 +1,6 @@
 # firebase_app
 
-A new Flutter application. Codelab exercise.
+A new Flutter application. Codelab exercises.
 
 - Exercise: https://codelabs.developers.google.com/codelabs/flutter-firebase#1
 - Exercise: https://youtu.be/DqJ_KjFzL9I
