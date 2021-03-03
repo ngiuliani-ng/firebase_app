@@ -55,10 +55,7 @@ class _HomePageState extends State<HomePage> {
      * Quando non ci sono dati, mostra un indicatore di avanzamento.
      */
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('months')
-          .orderBy('order')
-          .snapshots(),
+      stream: FirebaseFirestore.instance.collection('months').orderBy('order').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
         return _buildList(context, snapshot.data.docs);
@@ -87,9 +84,7 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Container(
         decoration: BoxDecoration(
-          color: (_getCurrentDate().month == record.order)
-              ? Colors.transparent
-              : Colors.grey.shade300,
+          color: (_getCurrentDate().month == record.order) ? Colors.transparent : Colors.grey.shade300,
           border: Border.all(
             color: Colors.grey.shade600,
           ),
@@ -100,7 +95,7 @@ class _HomePageState extends State<HomePage> {
             record.month,
           ),
           subtitle: Text(
-            record.hours.toStringAsPrecision(1),
+            record.hours.toString(),
           ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
@@ -108,18 +103,14 @@ class _HomePageState extends State<HomePage> {
               IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () {
-                  if (_getCurrentDate().month == record.order)
-                    return record.reference
-                        .update({'hours': record.hours + 0.5});
+                  if (_getCurrentDate().month == record.order) return record.reference.update({'hours': record.hours + 0.5});
                   return null;
                 },
               ),
               IconButton(
                 icon: Icon(Icons.remove),
                 onPressed: () {
-                  if (_getCurrentDate().month == record.order)
-                    return record.reference
-                        .update({'hours': record.hours - 0.5});
+                  if (_getCurrentDate().month == record.order) return record.reference.update({'hours': record.hours - 0.5});
                   return null;
                 },
               ),
@@ -145,8 +136,7 @@ class Record {
         hours = map['hours'],
         order = map['order'];
 
-  Record.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data(), reference: snapshot.reference);
+  Record.fromSnapshot(DocumentSnapshot snapshot) : this.fromMap(snapshot.data(), reference: snapshot.reference);
 
   @override
   String toString() => "Record<$order:$month:$hours>";
