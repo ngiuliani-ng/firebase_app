@@ -14,7 +14,6 @@ A new Flutter application. Codelab exercises.
     - IOS:
         - ID Package: "com.ngiuliani.firebaseApp"
         - File [.gitignore]: ios/Runner/GoogleService-Info.plist
-
 - Plugin:
     - cloud_firestore: https://pub.dev/packages/cloud_firestore
     - firebase_core: https://pub.dev/packages/firebase_core
