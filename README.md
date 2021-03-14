@@ -9,11 +9,8 @@ A new Flutter application. Codelab exercises.
 
 - Google Service for Firebase:
     - Android:
-        - ID Package: "com.ngiuliani.firebase_app"
-        - File [.gitignore]: android/app/google-services.json
+        - ID Package: com.ngiuliani.firebase_app
+        - File: android/app/google-services.json
     - IOS:
-        - ID Package: "com.ngiuliani.firebaseApp"
-        - File [.gitignore]: ios/Runner/GoogleService-Info.plist
-- Plugin:
-    - cloud_firestore: https://pub.dev/packages/cloud_firestore
-    - firebase_core: https://pub.dev/packages/firebase_core
+        - ID Package: com.ngiuliani.firebaseApp
+        - File: ios/Runner/GoogleService-Info.plist
